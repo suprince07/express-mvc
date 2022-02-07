@@ -1,14 +1,15 @@
 const User=require('../models/user.model');
 
 const index = async (req, res) => {
-  return res.status(200).send(User.users);
+  return res.status(200).send(await User.getUsers());
 }
 
 const create = async (req, res) => {
-  const { id, email, password, address } = req.body;
-  User.users.push({
-    id, email, password, address
-  })
+  const { email, password, address } = req.body;
+  // User.users.push({
+  //   id, email, password, address
+  // })
+  await User.createUser( email, password, address );
   return res.status(200).send({
     "message": "User created successfully"
   });
