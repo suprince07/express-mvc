@@ -1,22 +1,30 @@
 const User=require('../models/user.model');
 
 const index = async (req, res) => {
-  return res.status(200).send(User.users);
+  try{
+    const users=await User.getUsers();
+    return res.status(200).send(users);
+  }catch(e){
+    return res.status(400).send(e.toString());
+  }
 }
 
 const create = async (req, res) => {
-  const { id, email, password, address } = req.body;
+  const { name, email, password } = req.body;
+  try{
+    const result=await User.insertUser({name,email,password});
+    return res.status(200).send({message:"user created succesfully"});
+  }catch(e){
+    return res.status(400).send(e.toString());
+  }
   User.users.push({
     id, email, password, address
   })
-  return res.status(200).send({
-    "message": "User created successfully"
-  });
 }
 
 const edit = async (req, res) => {
   const { id } = req.params;
-  const { email, password, address } = req.body;
+  const { email, password, name } = req.body;
   const user = User.users.find((user) => user.id === id);
   if (user) {
     user.email = email
